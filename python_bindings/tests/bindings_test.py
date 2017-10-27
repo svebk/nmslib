@@ -34,6 +34,19 @@ class DenseIndexTestMixin(object):
         ids, distances = index.knnQuery(row, k=10)
         self.assertTrue(get_hitrate(get_exact_cosine(row, data), ids) >= 5)
 
+    def testLengthResultsKnnQuery(self):
+        np.random.seed(23)
+        data = np.random.randn(1000, 10).astype(np.float32)
+
+        index = self._get_index()
+        index.addDataPointBatch(data)
+        index.createIndex()
+
+        row = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1.])
+        for k in [10, 100, 500]:
+            ids, distances = index.knnQuery(row, k=k)
+            self.assertEqual(len(ids), k)
+
     def testKnnQueryBatch(self):
         np.random.seed(23)
         data = np.random.randn(1000, 10).astype(np.float32)
