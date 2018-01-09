@@ -374,7 +374,7 @@ namespace similarity {
         ////////////////////////////////////////////////////////////////////////
         if (iscosine_) {
             for (long i = 0; i < ElList_.size(); i++) {
-                float *v = (float *)(data_level0_memory_ + (size_t)i * memoryPerObject_ + offsetData_ + 16);
+                float *v = (float *)(data_level0_memory_ + (size_t)i * memoryPerObject_ + offsetData_ + 16); // Why + 16?
                 float sum = 0;
                 for (int i = 0; i < vectorlength_; i++) {
                     sum += v[i] * v[i];
@@ -666,6 +666,7 @@ namespace similarity {
     {
         bool useOld = searchAlgoType_ == kOld || (searchAlgoType_ == kHybrid && ef_ >= 1000);
         // cout << "Ef = " << ef_ << " use old = " << useOld << endl;
+        // TODO: we should check query->K_ against this->ef_  to ensure that we will be able to return enough knn?
         switch (searchMethod_) {
         default:
             throw runtime_error("Invalid searchMethod: " + ConvertToString(searchMethod_));

@@ -77,6 +77,7 @@ namespace similarity {
             priority_queue<HnswNodeDistFarther<dist_t>> resultSet;
             priority_queue<HnswNodeDistFarther<dist_t>> templist;
             vector<HnswNodeDistFarther<dist_t>> returnlist;
+            // copy resultSet1 (HnswNodeDistCloser) to resultSet (HnswNodeDistFarther)
             while (resultSet1.size() > 0) {
                 resultSet.emplace(resultSet1.top().getDistance(), resultSet1.top().getMSWNodeHier());
                 resultSet1.pop();
@@ -88,6 +89,7 @@ namespace similarity {
                 dist_t dist_to_query = curen.getDistance();
                 resultSet.pop();
                 bool good = true;
+                // Range based for loop: http://en.cppreference.com/w/cpp/language/range-for
                 for (HnswNodeDistFarther<dist_t> curen2 : returnlist) {
                     dist_t curdist =
                         space->IndexTimeDistance(curen2.getMSWNodeHier()->getData(), curen.getMSWNodeHier()->getData());

@@ -733,6 +733,7 @@ namespace similarity {
         float PORTABLE_ALIGN32 TmpRes[8];
         size_t qty = query->QueryObject()->datalength() >> 2;
 
+        // Normalize query
         float *v = pVectq;
         float sum = 0;
         for (int i = 0; i < qty; i++) {
@@ -754,6 +755,7 @@ namespace similarity {
         dist_t curdist = (ScalarProductSIMD(
             pVectq, (float *)(data_level0_memory_ + enterpointId_ * memoryPerObject_ + offsetData_ + 16), qty, TmpRes));
 
+        // Explore down the hierarchy to get closer sample curNodeNum with dist curdist at level 0
         for (int i = maxlevel1; i > 0; i--) {
             bool changed = true;
             while (changed) {
@@ -781,6 +783,7 @@ namespace similarity {
             }
         }
 
+
         SortArrBI<dist_t, int> sortedArr(max<size_t>(ef_, query->GetK()));
         sortedArr.push_unsorted_grow(curdist, curNodeNum);
 
@@ -788,7 +791,7 @@ namespace similarity {
 
         typedef typename SortArrBI<dist_t, int>::Item QueueItem;
         vector<QueueItem> &queueData = sortedArr.get_data();
-        vector<QueueItem> itemBuff(8 * 30);
+        vector<QueueItem> itemBuff(8 * 30); // 8 * 30 ?
 
         massVisited[curNodeNum] = currentV;
 
